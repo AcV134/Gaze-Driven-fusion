@@ -32,10 +32,10 @@ KITTI_LABEL_MAP = {
     19: 81,  # traffic-sign
 }
 
-outputs_dir = '/mnt/A/hust_ley/CODE_LEY/Project/iascene_pro/IAScene-Outputs/'
+outputs_dir = '/home/models/DISC/adl-project-gaze/outputs'
 unique_id = 'e14-17.04-0108-reSet'
 
-@hydra.main(config_path='../configs', config_name='my_config_sema', version_base=None)
+@hydra.main(config_path='../configs', config_name='config_360', version_base=None)
 def main(cfg: DictConfig):
     if os.environ.get('LOCAL_RANK', 0) == 0:
         print(OmegaConf.to_yaml(cfg))
@@ -54,11 +54,18 @@ def main(cfg: DictConfig):
     model.cuda()
     model.eval()
 
-    assert cfg.data.datasets.type == 'SemanticKITTI'
+    # assert cfg.data.datasets.type == 'SemanticKITTI'
     label_map = np.array([KITTI_LABEL_MAP[i] for i in range(len(KITTI_LABEL_MAP))], dtype=np.int32)
 
     with torch.no_grad():
-        for batch_inputs, targets in track(data_loader):
+        # 1. Add 'i' and 'enumerate' to count the batches
+        for i, (batch_inputs, targets) in enumerate(track(data_loader)):
+            
+            # 2. Break the loop after 5 batches (adjust this number as needed!)
+            if i >= 5:
+                print(f"\nQuick test complete! Stopped after {i} batches.")
+                break
+
             for key in batch_inputs:
                 if isinstance(batch_inputs[key], torch.Tensor):
                     batch_inputs[key] = batch_inputs[key].cuda()

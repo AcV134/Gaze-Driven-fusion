@@ -197,6 +197,7 @@ class DepthNet(nn.Module):
         )
 
     def forward(self, x, mlp_input):
+        self.bn.eval()
         mlp_input = self.bn(mlp_input.reshape(-1, mlp_input.shape[-1]))
         x = self.reduce_conv(x)
         context_se = self.context_mlp(mlp_input)[..., None, None]

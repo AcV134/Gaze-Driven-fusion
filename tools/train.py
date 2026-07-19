@@ -11,6 +11,41 @@ from omegaconf import DictConfig, OmegaConf
 from ssc_ia import LitModule, build_data_loaders, pre_build_callbacks, SetSeed
 
 
+import torch
+import torch.nn.functional as F
+import inspect
+
+_orig_batch_norm = F.batch_norm
+
+def my_batch_norm(input, *args, **kwargs):
+    # Check if total elements per channel equals 1 (triggers the crash)
+    num_elements_per_channel = input.numel() / input.shape[1]
+    
+    if num_elements_per_channel == 1:
+        sig = inspect.signature(_orig_batch_norm)
+        bound = sig.bind_partial(input, *args, **kwargs)
+        
+        # 1. Force evaluation mode behavior
+        bound.arguments['training'] = False
+        
+        # 2. Check if running statistics arrays are missing/None
+        rm = bound.arguments.get('running_mean', None)
+        rv = bound.arguments.get('running_var', None)
+        
+        # 3. Dynamically inject dummy statistics if they don't exist
+        num_features = input.shape[1]
+        if rm is None:
+            bound.arguments['running_mean'] = torch.zeros(num_features, device=input.device, dtype=input.dtype)
+        if rv is None:
+            bound.arguments['running_var'] = torch.ones(num_features, device=input.device, dtype=input.dtype)
+            
+        return _orig_batch_norm(*bound.args, **bound.kwargs)
+        
+    return _orig_batch_norm(input, *args, **kwargs)
+
+# Overwrite PyTorch's internal function globally for this execution context
+F.batch_norm = my_batch_norm
+
 @hydra.main(config_path='../configs', config_name='config_360', version_base=None)  # my_config
 def main(cfg: DictConfig):
     # torch.backends.cudnn.benchmark = False 

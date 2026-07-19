@@ -23,6 +23,15 @@ class LitModule(L.LightningModule):
         if 'class_names' in kwargs:
             self.class_names = kwargs['class_names']
 
+    def train(self, mode: bool = True):
+        # First, let the default PyTorch function set everything to training mode
+        super().train(mode)
+        # If we are entering training mode, find all BatchNorm layers and flip them to eval
+        if mode:
+            for m in self.modules():
+                if 'BatchNorm' in m.__class__.__name__:
+                    m.eval()
+
     def forward(self, x):
         return self.model(x)
 
