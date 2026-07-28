@@ -200,6 +200,7 @@ class KITTI360(Dataset):
         if self.gaze:
             #Normalize gaze map and concatenate it with the image as an additional channel
             gaze_nl = np.asarray(gaze_pil, dtype=np.float32) / 255.0
+            label['gaze_2d'] = torch.from_numpy(gaze_nl).float()
             gaze_nl = np.expand_dims(gaze_nl, axis=-1)
             img = np.concatenate((img, gaze_nl), axis=-1)  # (H, W, 4)
 

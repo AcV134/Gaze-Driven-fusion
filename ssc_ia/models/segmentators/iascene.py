@@ -9,7 +9,8 @@ from omegaconf import OmegaConf
 from ..bevpipelines import LssVolume
 from ... import build_from_configs
 from .. import encoders, bevpipelines, decoders
-from ..losses import (ce_ssc_loss, geo_scal_loss, sem_scal_loss, semantic_seg_loss, height_loss, get_klv_depth_loss)
+from ..losses import (ce_ssc_loss, geo_scal_loss, sem_scal_loss, semantic_seg_loss, height_loss, get_klv_depth_loss, gaze_weighted_ce_ssc_loss)
+from ..utils import pix2vox, generate_grid
 
 class IAScene(nn.Module):
 
@@ -82,14 +83,61 @@ class IAScene(nn.Module):
         return out_dict
     
     def loss(self, preds, target):
-        loss_map = {
-            'ce_ssc': ce_ssc_loss,
-            'sem_scal': sem_scal_loss,
-            'geo_scal': geo_scal_loss,
-            'bev_seg': semantic_seg_loss,
-            'geo_h': height_loss,
-            'depth': get_klv_depth_loss,
-        }
+        if self.gaze and 'gaze_2d' in target:
+            depth = target['depth']
+            K, E, voxel_origin, _, _, _, post_rot, post_tran = preds['params']
+
+            B, H, W = depth.shape
+            image_grid = generate_grid((H, W)).to(depth.device)
+            image_grid = torch.flip(image_grid, dims=[0]).unsqueeze(0)
+
+            vol_pts = pix2vox(
+                image_grid,
+                 depth.unsqueeze(1),
+                 K,
+                 E,
+                 voxel_origin, 
+                 self.voxel_size, 
+                 post_rot, 
+                 post_tran).long()
+
+            scene_shape = self.scene_shape
+            gaze_3d = torch.zeros((B, *scene_shape), device=depth.device)
+
+            for b in range(B):
+                pts = vol_pts[b]  # (H*W, 3)
+                gaze_vals = target['gaze_2d'][b].flatten() 
+                
+                valid = ((pts[:, 0] >= 0) & (pts[:, 0] < scene_shape[0]) &
+                        (pts[:, 1] >= 0) & (pts[:, 1] < scene_shape[1]) &
+                        (pts[:, 2] >= 0) & (pts[:, 2] < scene_shape[2]))
+                
+                valid_pts = pts[valid]
+                valid_gaze = gaze_vals[valid]
+                
+                gaze_3d[b, valid_pts[:, 0], valid_pts[:, 1], valid_pts[:, 2]] = valid_gaze
+                
+            target['gaze_3d'] = gaze_3d
+
+
+            loss_map = {
+                'ce_ssc': gaze_weighted_ce_ssc_loss,
+                'sem_scal': sem_scal_loss,
+                'geo_scal': geo_scal_loss,
+                'bev_seg': semantic_seg_loss,
+                'geo_h': height_loss,
+                'depth': get_klv_depth_loss,
+            }
+
+        else:
+            loss_map = {
+                'ce_ssc': ce_ssc_loss,
+                'sem_scal': sem_scal_loss,
+                'geo_scal': geo_scal_loss,
+                'bev_seg': semantic_seg_loss,
+                'geo_h': height_loss,
+                'depth': get_klv_depth_loss,
+            }
 
         target['class_weights'] = self.class_weights.type_as(preds['ssc_logits'][0])
         losses = {}

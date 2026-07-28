@@ -135,3 +135,28 @@ def difficult_area_focus_loss(pred, target):
     weights = torch.zeros_like(loss) + 0.5
     weights[nonempty_mask] = 3.0  # 20% nonempty
     return (loss * weights).sum() / total_sum # weighted_loss
+
+def gaze_weighted_ce_ssc_loss(pred, target, threshold=0.5, multiplier=5.0):
+    raw_loss = F.cross_entropy(
+        pred['ssc_logits'].float(),
+        target['target'].long(),
+        weight=target['class_weights'].float(),
+        ignore_index=255,
+        reduction='none',
+    )
+
+    if 'gaze_3d' in target:
+        gaze_3d = target['gaze_3d']
+        gaze_mask = (gaze_3d > threshold).float()
+
+        #need to make gaze_mask the same size as raw_loss, which is (bs, 128, 128, 16)
+        gaze_mask = gaze_mask.unsqueeze(1)
+        gaze_mask = F.interpolate(gaze_mask, size=raw_loss.shape[1:], mode='nearest')
+        gaze_mask = gaze_mask.squeeze(1)
+        
+        spatial_weights = 1.0 + gaze_mask * (multiplier - 1.0)
+        weighted_loss = raw_loss * spatial_weights
+
+        return weighted_loss.mean()
+    else:
+        return raw_loss.mean()
