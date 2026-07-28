@@ -224,7 +224,7 @@ class KITTI360(Dataset):
                 if isinstance(v, np.ndarray):
                     if v.dtype == np.float64:
                         v = v.astype('float32')
-                    data[k] = torch.from_numpy(v)
+                    data[k] = torch.from_numpy(v.copy())
 
         ndarray_to_tensor(data)
         ndarray_to_tensor(label)

@@ -51,7 +51,7 @@ class LitModule(L.LightningModule):
             loss['loss_total'] = sum(loss.values())
             self.log_dict({f'train/{k}': v for k, v in loss.items()}, prog_bar=True)
         else:
-            self.log('train/loss', loss)
+            self.log('train/loss', loss, batch_size=batch['img'].shape[0])
         return sum(loss.values()) if isinstance(loss, dict) else loss
 
     def validation_step(self, batch, batch_idx):
