@@ -130,6 +130,10 @@ dmypy.json
 
 outputs/
 work_dirs/
+pretrain/
+inputs/
+heat_map_inputs/
+
 
 *.yml
 .vscode/

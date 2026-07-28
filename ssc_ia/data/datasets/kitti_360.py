@@ -8,9 +8,12 @@ from PIL import Image
 from torch.utils.data import Dataset
 from torch.nn import functional as F
 from torchvision import transforms as T
+import cv2
 
 from ...utils.helper import vox2pix
 from ...utils.projection import project_voxels_to_single_bev, project_image_to_voxels
+
+GAZE_DIR = 'home/models/DISC/adl-project-gaze/gaze_data'
 
 
 SPLITS = {
@@ -53,8 +56,10 @@ class KITTI360(Dataset):
         project_scale=2,
         frustum_size=4,
         context_prior=False,
+        gaze=False,
     ):
         super().__init__()
+        self.gaze = gaze
         self.data_root = data_root
         self.label_root = label_root
         self.data_config = data_config
@@ -90,10 +95,17 @@ class KITTI360(Dataset):
                     'proj_matrix': proj_matrix,
                     'voxel_path': voxel_path,
                 })
-
-        self.transforms = T.Compose([
-            T.ToTensor(),
-            T.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))])
+        
+        if self.gaze:
+            self.gaze_dir = GAZE_DIR
+            self.blur_kernel = (51,51)
+            self.transforms = T.Compose([
+                T.ToTensor(),
+                T.Normalize((0.485, 0.456, 0.406, 0.0), (0.229, 0.224, 0.225, 1.0))])
+        else:
+            self.transforms = T.Compose([
+                T.ToTensor(),
+                T.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))])
 
     def __len__(self):
         return len(self.scans)
@@ -149,6 +161,21 @@ class KITTI360(Dataset):
             # print(f"Exception: {e}")
             raise e
 
+        if self.gaze:
+            #importing gaze map
+            gaze_filename = f"{frame_id}_gaze_map.jpg"
+            gaze_path = osp.join(self.gaze_dir, gaze_filename)
+            gaze_map = cv2.imread(gaze_path, cv2.IMREAD_GRAYSCALE)
+            if gaze_map is None:
+                print(f"Error loading gaze map at path: {gaze_path}. Using zero gaze map instead.")
+                gaze_map = np.zeros((img.height, img.width), dtype=np.uint8)
+            else:
+                gaze_map = cv2.resize(gaze_map, (img.width, img.height), interpolation=cv2.INTER_CUBIC)
+                gaze_map = cv2.GaussianBlur(gaze_map, self.blur_kernel, 0)
+            
+            # Convert gaze map to PIL Image for consistency with other transformations
+            gaze_pil = Image.fromarray(gaze_map)
+
         # Apply the same augment on both depth map and img
         post_rot = torch.eye(2)
         post_tran = torch.zeros(2)
@@ -158,6 +185,9 @@ class KITTI360(Dataset):
             img, depth, post_rot, post_tran, resize=resize, 
             resize_dims=resize_dims, crop=crop, flip=flip, rotate=rotate
         )
+        if self.gaze:
+            gaze_pil = self.img_transform_core(gaze_pil, resize_dims, crop, flip, rotate)
+        
         # for convenience, make augmentation matrices 3x3
         post_tran = np.zeros(3)
         post_rot = np.eye(3)
@@ -166,7 +196,14 @@ class KITTI360(Dataset):
 
         depth = np.asarray(depth, dtype=np.float32)
         img = np.asarray(img, dtype=np.float32) / 255.0
-        data['img'] = self.transforms(img)  # (3, H, W)  # TO Tensor
+
+        if self.gaze:
+            #Normalize gaze map and concatenate it with the image as an additional channel
+            gaze_nl = np.asarray(gaze_pil, dtype=np.float32) / 255.0
+            gaze_nl = np.expand_dims(gaze_nl, axis=-1)
+            img = np.concatenate((img, gaze_nl), axis=-1)  # (H, W, 4)
+
+        data['img'] = self.transforms(img)  # (4, H, W)  # TO Tensor
         data['depth'] = depth
         data['post_tran'] = post_tran
         data['post_rot'] = post_rot

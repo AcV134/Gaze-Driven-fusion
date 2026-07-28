@@ -13,6 +13,8 @@ hydra:
   sweep:
     dir: outputs/${now:%Y-%m-%d}/${now:%H-%M}
 
+use_gaze: False
+
 trainer:
   devices: 4
   accelerator: gpu
@@ -41,4 +43,4 @@ resume:
 
 validate: false
 
-ckpt_path: ckpts/DISC_KITTI360.ckpt
+ckpt_path: pretrain/DISC_KITTI360.ckpt

@@ -4,6 +4,7 @@
 # *- Need to modify points_cls_loss when change query init.
 model:
   type: IAScene
+  gaze: ${use_gaze}
   view_scales: [4, 8, 16]
   embed_dims: 128
   encoder:

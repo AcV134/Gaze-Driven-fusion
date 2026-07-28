@@ -25,17 +25,21 @@ class IAScene(nn.Module):
         num_classes,
         class_frequencies=None,
         criterions=None,
+        gaze=False,
         voxel_size=0.2, 
         scene_shape=[256, 256, 32],
         **kwargs,
     ):
         super().__init__()
+        self.gaze = gaze
         self.class_weights = torch.from_numpy(1 / np.log(np.array(class_frequencies) + 0.001))
         self.criterions = criterions
         self.image_shape = image_shape
         self.project_scale = volume_scale
         self.voxel_size = voxel_size*volume_scale
         self.scene_shape = [l//self.project_scale for l in scene_shape]
+        if self.gaze:
+            self.gaze_stem = nn.Conv2d(in_channels=4, out_channels=3, kernel_size=3, padding=1)
         # build model structure
         self.encoder = build_from_configs(
             encoders, encoder, embed_dims=embed_dims, scales=view_scales)
@@ -54,7 +58,11 @@ class IAScene(nn.Module):
     
     def forward(self, inputs):
         # Symphonies encoder
-        feats = self.encoder(inputs['img']) 
+        if self.gaze:
+            gaze_input = self.gaze_stem(inputs['img'])
+            feats = self.encoder(gaze_input) 
+        else:
+            feats = self.encoder(inputs['img'])
 
         depth, K, E, voxel_origin, post_rot, post_tran, projected_pix = list(map(lambda k: inputs[k],
             ('depth', 'cam_K', 'cam_pose', 'voxel_origin', 'post_rot', 'post_tran', 'projected_pix_2')))
