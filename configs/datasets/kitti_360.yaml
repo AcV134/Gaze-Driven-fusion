@@ -38,3 +38,5 @@ model:
 evaluator:
   type: SSCMetrics
   num_classes: 19
+
+path: outputs/KITTI360/predictions

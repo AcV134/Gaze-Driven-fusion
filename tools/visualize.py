@@ -75,6 +75,7 @@ def draw(
     # Compute the coordinates of the mesh representing camera
     x = d * img_size[0] / (2 * f)
     y = d * img_size[1] / (2 * f)
+
     tri_points = np.array([
         [0, 0, 0],
         [x, y, d],
@@ -82,11 +83,14 @@ def draw(
         [-x, -y, d],
         [x, -y, d],
     ])
+
     tri_points = np.hstack([tri_points, np.ones((5, 1))])
     tri_points = (np.linalg.inv(cam_pose) @ tri_points.T).T
+
     x = tri_points[:, 0] - vox_origin[0]
     y = tri_points[:, 1] - vox_origin[1]
     z = tri_points[:, 2] - vox_origin[2]
+
     triangles = [
         (0, 1, 2),
         (0, 1, 4),
@@ -94,19 +98,26 @@ def draw(
         (0, 2, 3),
     ]
 
-    # Compute the voxels coordinates
-    grid_coords = get_grid_coords([voxels.shape[0], voxels.shape[1], voxels.shape[2]], voxel_size)
+    # Compute voxel grid coordinates
+    grid_coords = get_grid_coords(
+        [voxels.shape[0], voxels.shape[1], voxels.shape[2]],
+        voxel_size
+    )
+
+    
     # Attach the predicted class to every voxel
     grid_coords = np.vstack([grid_coords.T, voxels.reshape(-1)]).T
+
     # Get the voxels inside FOV
     fov_grid_coords = grid_coords[fov_mask, :]
     # Get the voxels outside FOV
     outfov_grid_coords = grid_coords[~fov_mask, :]
-    # Draw the camera
+     # Draw the camera
     mlab.figure(bgcolor=(1, 1, 1))
     mlab.triangular_mesh(
         x, y, z, triangles, representation='wireframe', color=(0, 0, 0), line_width=10)
 
+    # Prepare colors
     outfov_colors = colors.copy()
     outfov_colors[:, :3] = outfov_colors[:, :3] // 3 * 2
 
@@ -129,6 +140,7 @@ def draw(
         plt_plot.module_manager.scalar_lut_manager.lut.table = colors if i == 0 else outfov_colors
 
     plt_plot.scene.camera.zoom(1.3)
+
     if save != None:
         print('right here for save')
         mlab.savefig(save, size=(224, 224))   
@@ -136,14 +148,14 @@ def draw(
     else:
         mlab.show()
 
-base_output_dir = '/mnt/A/hust_ley/CODE_LEY/Project/iascene_pro/IAScene-Outputs/Visval/'
-vis_ip = '17.65-1213'
 
-@hydra.main(config_path='../configs', config_name='my_config_sema', version_base=None)
+base_output_dir = './outputs/'
+
+@hydra.main(config_path='../configs', config_name='config_360', version_base=None)
 def main(config: DictConfig):
     files = ([os.path.join(config.path, f)
               for f in os.listdir(config.path)] if os.path.isdir(config.path) else [config.path])
-    output_dir = osp.join(base_output_dir, vis_ip, 'figures')
+    output_dir = osp.join(base_output_dir, 'visualizations')
     os.makedirs(output_dir, exist_ok=True)
 
     for file in track(files):

@@ -135,6 +135,11 @@ inputs/
 heat_map_inputs/
 gaze_directory/
 gaze_mask_output.pkl
+!outputs/hust_ley/CODE_LEY/Project/iascene_pro/IAScene-Outputs/Visval/17.65-1213/figures/000060_gt.png
+!outputs/hust_ley/CODE_LEY/Project/iascene_pro/IAScene-Outputs/Visval/17.65-1213/figures/000060_pred.png
+!outputs/KITTI360/labels/008705.label
+!outputs/KITTI360/000005.pkl
+
 
 
 *.yml
