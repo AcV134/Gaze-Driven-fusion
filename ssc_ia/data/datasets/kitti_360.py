@@ -13,7 +13,7 @@ import cv2
 from ...utils.helper import vox2pix
 from ...utils.projection import project_voxels_to_single_bev, project_image_to_voxels
 
-GAZE_DIR = 'home/models/DISC/adl-project-gaze/gaze_data'
+GAZE_DIR = '/home/models/DISC/adl-project-gaze/gaze_directory'
 
 
 SPLITS = {
@@ -154,6 +154,7 @@ class KITTI360(Dataset):
 
         img_path = osp.join(self.data_root, sequence, 'image_00/data_rect',
                             frame_id + '.jpg')
+        # img_path = '/home/datasets/KITTI-360-low/data_2d_raw/2013_05_28_drive_0000_sync/image_00/data_rect/000000.jpg'
         try:
             img = Image.open(img_path).convert('RGB')
         except Exception as e:
@@ -163,8 +164,9 @@ class KITTI360(Dataset):
 
         if self.gaze:
             #importing gaze map
-            gaze_filename = f"{frame_id}_gaze_map.jpg"
-            gaze_path = osp.join(self.gaze_dir, gaze_filename)
+            gaze_path = osp.join(self.gaze_dir, 'data_2d_raw', sequence, 'image_00/data_rect',
+                                    frame_id + '_pred.png')
+            # gaze_path = '/home/models/DISC/adl-project-gaze/gaze_directory/data_2d_raw/2013_05_28_drive_0000_sync/image_00/data_rect/000000_pred.png'
             gaze_map = cv2.imread(gaze_path, cv2.IMREAD_GRAYSCALE)
             if gaze_map is None:
                 print(f"Error loading gaze map at path: {gaze_path}. Using zero gaze map instead.")

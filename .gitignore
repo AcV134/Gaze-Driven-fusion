@@ -133,6 +133,8 @@ work_dirs/
 pretrain/
 inputs/
 heat_map_inputs/
+gaze_directory/
+gaze_mask_output.pkl
 
 
 *.yml
