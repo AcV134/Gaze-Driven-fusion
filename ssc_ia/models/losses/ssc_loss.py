@@ -156,7 +156,11 @@ def gaze_weighted_ce_ssc_loss(pred, target, threshold=0.5, multiplier=5.0):
         
         spatial_weights = 1.0 + gaze_mask * (multiplier - 1.0)
         weighted_loss = raw_loss * spatial_weights
-
-        return weighted_loss.mean()
     else:
-        return raw_loss.mean()
+        weighted_loss = raw_loss
+    
+    valid_mask = target['target'] != 255
+    valid_targets = target['target'][valid_mask].long()
+    weight_sum = target['class_weights'].float()[valid_targets].sum()
+    
+    return weighted_loss.sum() / (weight_sum + 1e-8)
