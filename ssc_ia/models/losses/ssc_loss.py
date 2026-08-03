@@ -136,7 +136,7 @@ def difficult_area_focus_loss(pred, target):
     weights[nonempty_mask] = 3.0  # 20% nonempty
     return (loss * weights).sum() / total_sum # weighted_loss
 
-def gaze_weighted_ce_ssc_loss(pred, target, threshold=0.5, multiplier=5.0):
+def gaze_weighted_ce_ssc_loss(pred, target, threshold=0.5, multiplier=2.0):
     raw_loss = F.cross_entropy(
         pred['ssc_logits'].float(),
         target['target'].long(),
