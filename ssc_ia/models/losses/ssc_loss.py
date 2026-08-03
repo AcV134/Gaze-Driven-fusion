@@ -1,5 +1,8 @@
 import torch
 import torch.nn.functional as F
+import os
+import numpy as np
+import pickle
 
 
 def ce_ssc_loss(pred, target):
@@ -145,22 +148,32 @@ def gaze_weighted_ce_ssc_loss(pred, target, threshold=0.5, multiplier=2.0):
         reduction='none',
     )
 
+    valid_mask = target['target'] != 255
+
     if 'gaze_3d' in target:
         gaze_3d = target['gaze_3d']
         gaze_mask = (gaze_3d > threshold).float()
 
-        #need to make gaze_mask the same size as raw_loss, which is (bs, 128, 128, 16)
+        # Resample gaze_mask to raw_loss dimensions (bs, H, W, D)
         gaze_mask = gaze_mask.unsqueeze(1)
         gaze_mask = F.interpolate(gaze_mask, size=raw_loss.shape[1:], mode='nearest')
         gaze_mask = gaze_mask.squeeze(1)
         
+        # Compute spatial weights
         spatial_weights = 1.0 + gaze_mask * (multiplier - 1.0)
         weighted_loss = raw_loss * spatial_weights
+
+        # Compute matching spatial-class weights for valid target voxels
+        valid_targets = target['target'][valid_mask].long()
+        cls_weights_valid = target['class_weights'].float()[valid_targets]
+        spatial_weights_valid = spatial_weights[valid_mask]
+        
+        # Correct joint normalization factor
+        total_weight_sum = (cls_weights_valid * spatial_weights_valid).sum()
+
     else:
         weighted_loss = raw_loss
+        valid_targets = target['target'][valid_mask].long()
+        total_weight_sum = target['class_weights'].float()[valid_targets].sum()
     
-    valid_mask = target['target'] != 255
-    valid_targets = target['target'][valid_mask].long()
-    weight_sum = target['class_weights'].float()[valid_targets].sum()
-    
-    return weighted_loss.sum() / (weight_sum + 1e-8)
+    return weighted_loss.sum() / (total_weight_sum + 1e-8)
