@@ -39,8 +39,11 @@ class IAScene(nn.Module):
         self.project_scale = volume_scale
         self.voxel_size = voxel_size*volume_scale
         self.scene_shape = [l//self.project_scale for l in scene_shape]
-        if self.gaze:
-            self.gaze_stem = nn.Conv2d(in_channels=4, out_channels=3, kernel_size=3, padding=1)
+
+        #uncomment this section if you want to use gaze as an additional input channel
+        # if self.gaze:
+        #     self.gaze_stem = nn.Conv2d(in_channels=4, out_channels=3, kernel_size=3, padding=1)
+        
         # build model structure
         self.encoder = build_from_configs(
             encoders, encoder, embed_dims=embed_dims, scales=view_scales)
@@ -59,11 +62,14 @@ class IAScene(nn.Module):
     
     def forward(self, inputs):
         # Symphonies encoder
-        if self.gaze:
-            gaze_input = self.gaze_stem(inputs['img'])
-            feats = self.encoder(gaze_input) 
-        else:
-            feats = self.encoder(inputs['img'])
+        # uncomment this section if you want to use gaze as an additional input channel
+        # if self.gaze:
+        #     gaze_input = self.gaze_stem(inputs['img'])
+        #     feats = self.encoder(gaze_input) 
+        # else:
+        #     feats = self.encoder(inputs['img'])
+
+        feats = self.encoder(inputs['img'])  # (B, C, H, W)
 
         depth, K, E, voxel_origin, post_rot, post_tran, projected_pix = list(map(lambda k: inputs[k],
             ('depth', 'cam_K', 'cam_pose', 'voxel_origin', 'post_rot', 'post_tran', 'projected_pix_2')))

@@ -8,6 +8,7 @@ data:
     data_root: data/KITTI-360-low/data_2d_raw
     label_root: data/KITTI-360-low/preprocess/labels
     depth_root: data/KITTI-360-low/depth/sequences
+    gaze_root: gaze_directory
     data_config:
       input_size: [384, 1408]
       resize: [0., 0.]
