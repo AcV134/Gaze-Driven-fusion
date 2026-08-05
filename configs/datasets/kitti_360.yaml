@@ -38,6 +38,7 @@ model:
     feats_shape: [24, 88] 
 evaluator:
   type: SSCMetrics
+  gaze: ${use_gaze}
   num_classes: 19
 
 path: outputs/KITTI360/predictions

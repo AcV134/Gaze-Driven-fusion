@@ -140,7 +140,7 @@ gaze_mask_output.pkl
 !outputs/KITTI360/labels/008705.label
 !outputs/KITTI360/000005.pkl
 
-
+run_test.sh
 
 *.yml
 .vscode/
