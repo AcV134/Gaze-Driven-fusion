@@ -55,9 +55,11 @@ class KITTI360(Dataset):
         frustum_size=4,
         context_prior=False,
         gaze=False,
+        gaze_input_architecture=False,
     ):
         super().__init__()
         self.gaze = gaze
+        self.gaze_input_architecture = gaze_input_architecture
         self.data_root = data_root
         self.gaze_root = gaze_root
         self.label_root = label_root
@@ -98,12 +100,14 @@ class KITTI360(Dataset):
         if self.gaze:
             self.gaze_dir = self.gaze_root
             self.blur_kernel = (51,51)
-            self.transforms = T.Compose([
-                T.ToTensor(),
-
-                #uncomment this section if you want to use gaze as an additional input channel
-                # T.Normalize((0.485, 0.456, 0.406, 0.0), (0.229, 0.224, 0.225, 1.0))
-                T.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))])
+            if self.gaze_input_architecture:
+                self.transforms = T.Compose([
+                    T.ToTensor(),
+                    T.Normalize((0.485, 0.456, 0.406, 0.0), (0.229, 0.224, 0.225, 1.0))])
+            else:
+                self.transforms = T.Compose([
+                    T.ToTensor(),
+                    T.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))])
         else:
             self.transforms = T.Compose([
                 T.ToTensor(),
@@ -207,10 +211,11 @@ class KITTI360(Dataset):
             label['gaze_2d'] = torch.from_numpy(gaze_nl).float()
 
             #uncomment this section if you want to use gaze as an additional input channel
-            # gaze_nl = np.expand_dims(gaze_nl, axis=-1)
-            # img = np.concatenate((img, gaze_nl), axis=-1)  # (H, W, 4)
+            if self.gaze_input_architecture:
+                gaze_nl = np.expand_dims(gaze_nl, axis=-1)
+                img = np.concatenate((img, gaze_nl), axis=-1)  # (H, W, 4)
 
-        data['img'] = self.transforms(img)  # (3, H, W)  # TO Tensor
+        data['img'] = self.transforms(img)  # (N, H, W)  # TO Tensor; N = 3 or 4 depending on gaze_input_architecture
         data['depth'] = depth
         data['post_tran'] = post_tran
         data['post_rot'] = post_rot

@@ -4,6 +4,7 @@ data:
   datasets:
     type: KITTI360
     gaze: ${use_gaze}
+    gaze_input_architecture: ${gaze_input}
     splits: [train, val, test]
     data_root: data/KITTI-360-low/data_2d_raw
     label_root: data/KITTI-360-low/preprocess/labels

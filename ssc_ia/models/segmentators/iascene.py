@@ -27,12 +27,14 @@ class IAScene(nn.Module):
         class_frequencies=None,
         criterions=None,
         gaze=False,
+        gaze_input_architecture=False,
         voxel_size=0.2, 
         scene_shape=[256, 256, 32],
         **kwargs,
     ):
         super().__init__()
         self.gaze = gaze
+        self.gaze_input_architecture = gaze_input_architecture
         self.class_weights = torch.from_numpy(1 / np.log(np.array(class_frequencies) + 0.001))
         self.criterions = criterions
         self.image_shape = image_shape
@@ -41,8 +43,8 @@ class IAScene(nn.Module):
         self.scene_shape = [l//self.project_scale for l in scene_shape]
 
         #uncomment this section if you want to use gaze as an additional input channel
-        # if self.gaze:
-        #     self.gaze_stem = nn.Conv2d(in_channels=4, out_channels=3, kernel_size=3, padding=1)
+        if self.gaze_input_architecture:
+            self.gaze_stem = nn.Conv2d(in_channels=4, out_channels=3, kernel_size=3, padding=1)
         
         # build model structure
         self.encoder = build_from_configs(
@@ -63,13 +65,11 @@ class IAScene(nn.Module):
     def forward(self, inputs):
         # Symphonies encoder
         # uncomment this section if you want to use gaze as an additional input channel
-        # if self.gaze:
-        #     gaze_input = self.gaze_stem(inputs['img'])
-        #     feats = self.encoder(gaze_input) 
-        # else:
-        #     feats = self.encoder(inputs['img'])
-
-        feats = self.encoder(inputs['img'])  # (B, C, H, W)
+        if self.gaze_input_architecture:
+            gaze_input = self.gaze_stem(inputs['img'])
+            feats = self.encoder(gaze_input) 
+        else:
+            feats = self.encoder(inputs['img'])
 
         depth, K, E, voxel_origin, post_rot, post_tran, projected_pix = list(map(lambda k: inputs[k],
             ('depth', 'cam_K', 'cam_pose', 'voxel_origin', 'post_rot', 'post_tran', 'projected_pix_2')))
