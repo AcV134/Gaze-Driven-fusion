@@ -153,13 +153,15 @@ base_output_dir = './outputs/'
 
 @hydra.main(config_path='../configs', config_name='config_360', version_base=None)
 def main(config: DictConfig):
-    files = ([os.path.join(config.path, f)
-              for f in os.listdir(config.path)] if os.path.isdir(config.path) else [config.path])
-    output_dir = osp.join(base_output_dir, 'visualizations')
+    files = osp.join(base_output_dir, config.data.datasets.type, 'predictions', config.ckpt_path.split('/')[-1].split(".")[0] + '.' + config.ckpt_path.split('/')[-1].split(".")[1])
+    print(f"Visualizing outputs from: {files}")
+    output_dir = osp.join(base_output_dir, 'visualizations', config.data.datasets.type, config.ckpt_path.split('/')[-1].split(".")[0] + '.' + config.ckpt_path.split('/')[-1].split(".")[1])
+    print(f"Saving visualizations to: {output_dir}")
     os.makedirs(output_dir, exist_ok=True)
 
-    for file in track(files):
-        with open(file, 'rb') as f:
+    for file in os.listdir(files):
+        print(f"Processing file: {file}")
+        with open(os.path.join(files, file), 'rb') as f:
             outputs = pickle.load(f)
 
         cam_pose = outputs['cam_pose'] if 'cam_pose' in outputs else outputs[
