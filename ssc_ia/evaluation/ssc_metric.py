@@ -87,6 +87,8 @@ class SSCMetrics(Metric):
                 'Recall': recall,
                 'IoU': iou,
                 'iou_per_class': ious,
+                'iou_per_class_in': ious_in,
+                'iou_per_class_out': ious_out,
                 'mIoU': ious[1:].mean(),
                 'InsmIoU': ious[self.ins_indices].mean(),
                 'BkmIoU': ious[self.bk_indices].mean(),

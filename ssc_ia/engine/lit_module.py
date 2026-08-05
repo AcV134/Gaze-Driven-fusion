@@ -82,7 +82,7 @@ class LitModule(L.LightningModule):
 
     def _log_metrics(self, evaluator, prefix=None):
         metrics = evaluator.compute()
-        iou_per_class = metrics.pop('iou_per_class')
+        iou_per_class, iou_per_class_in, iou_per_class_out = metrics.pop('iou_per_class'), metrics.pop('iou_per_class_in'), metrics.pop('iou_per_class_out')
         if prefix:
             metrics = {'/'.join((prefix, k)): v for k, v in metrics.items()}
         self.log_dict(metrics, sync_dist=True)
@@ -92,6 +92,18 @@ class LitModule(L.LightningModule):
                 {
                     f'{prefix}/iou_{c}': s.item()
                     for c, s in zip(self.class_names, iou_per_class)
+                },
+                sync_dist=True)
+            self.log_dict(
+                {
+                    f'{prefix}/iou_in_{c}': s.item()
+                    for c, s in zip(self.class_names, iou_per_class_in)
+                },
+                sync_dist=True)
+            self.log_dict(
+                {
+                    f'{prefix}/iou_out_{c}': s.item()
+                    for c, s in zip(self.class_names, iou_per_class_out)
                 },
                 sync_dist=True)
         evaluator.reset()

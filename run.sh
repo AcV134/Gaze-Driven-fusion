@@ -10,7 +10,7 @@ export LD_LIBRARY_PATH=/home/anirudh/miniconda3/envs/disc/lib:$LD_LIBRARY_PATH
 # python tools/train.py trainer.devices=1 use_gaze=True gaze_input=True
 
 #For validation, uncomment this command
-python tools/train.py resume.ckpt_path='/home/models/DISC/adl-project-gaze/outputs/DISC/DISC-v1-360/Gaze_ckpt/e4_miou0.1791.ckpt' validate=true trainer.devices=1 +trainer.limit_val_batches=5
+python tools/train.py resume.ckpt_path='/home/models/DISC/adl-project-gaze/outputs/DISC/DISC-v1-360/Gaze_ckpt/e4_miou0.1791.ckpt' validate=true trainer.devices=1 use_gaze=True +trainer.limit_val_batches=5
 
 #for inference, uncomment this command
 # python tools/test.py ++ckpt_path='/home/models/DISC/adl-project-gaze/pretrain/DISC_KITTI360.ckpt' trainer.devices=1 
