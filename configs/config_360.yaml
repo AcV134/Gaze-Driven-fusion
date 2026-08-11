@@ -14,6 +14,7 @@ hydra:
     dir: outputs/${now:%Y-%m-%d}/${now:%H-%M}
 
 use_gaze: False
+gaze_input: False
 
 trainer:
   devices: 4

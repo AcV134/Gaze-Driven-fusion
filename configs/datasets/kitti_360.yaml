@@ -4,10 +4,12 @@ data:
   datasets:
     type: KITTI360
     gaze: ${use_gaze}
+    gaze_input_architecture: ${gaze_input}
     splits: [train, val, test]
     data_root: data/KITTI-360-low/data_2d_raw
     label_root: data/KITTI-360-low/preprocess/labels
     depth_root: data/KITTI-360-low/depth/sequences
+    gaze_root: gaze_directory
     data_config:
       input_size: [384, 1408]
       resize: [0., 0.]
@@ -37,4 +39,7 @@ model:
     feats_shape: [24, 88] 
 evaluator:
   type: SSCMetrics
+  gaze: ${use_gaze}
   num_classes: 19
+
+path: outputs/KITTI360/predictions

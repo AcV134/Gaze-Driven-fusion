@@ -82,18 +82,25 @@ class LitModule(L.LightningModule):
 
     def _log_metrics(self, evaluator, prefix=None):
         metrics = evaluator.compute()
-        iou_per_class = metrics.pop('iou_per_class')
+        iou_per_class, iou_per_class_in, iou_per_class_out = metrics.pop('iou_per_class'), metrics.pop('iou_per_class_in'), metrics.pop('iou_per_class_out')
         if prefix:
             metrics = {'/'.join((prefix, k)): v for k, v in metrics.items()}
         self.log_dict(metrics, sync_dist=True)
 
         if hasattr(self, 'class_names'):
-            self.log_dict(
-                {
-                    f'{prefix}/iou_{c}': s.item()
-                    for c, s in zip(self.class_names, iou_per_class)
-                },
-                sync_dist=True)
+            per_class_dict = {}
+
+            for c, s, s_in, s_out in zip(self.class_names, iou_per_class, iou_per_class_in, iou_per_class_out):
+                if c == 'empty':  # Optional: skip 'empty' class
+                    continue
+                    
+                per_class_dict[f'{prefix}/iou_{c}/1_all'] = s.item()
+                per_class_dict[f'{prefix}/iou_{c}/2_in'] = s_in.item()
+                per_class_dict[f'{prefix}/iou_{c}/3_out'] = s_out.item()
+
+            # Log the ordered dictionary
+            self.log_dict(per_class_dict, sync_dist=True)
+
         evaluator.reset()
 
     def on_fit_start(self):

@@ -74,6 +74,7 @@ markdown-it-py==3.0.0
 MarkupSafe==2.1.5
 matplotlib==3.5.3
 matplotlib-inline==0.1.7
+mayavi
 mccabe==0.7.0
 mdurl==0.1.2
 mmcv==2.0.1
@@ -128,6 +129,7 @@ pydantic_core==2.27.2
 pyflakes==3.2.0
 Pygments==2.19.2
 pyparsing==3.1.4
+PyQt5
 pyquaternion==0.9.9
 pytest==8.3.5
 python-dateutil==2.9.0.post0

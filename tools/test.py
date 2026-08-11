@@ -10,26 +10,25 @@ from rich.progress import track
 from ssc_ia import LitModule, build_data_loaders, pre_build_callbacks
 
 KITTI_LABEL_MAP = {
-    0: 0,  # unlabeled
+    0: 0,  # empty
     1: 10,  # car
     2: 11,  # bicycle
     3: 15,  # motorcycle
     4: 18,  # truck
     5: 20,  # other-vehicle
     6: 30,  # person
-    7: 31,  # bicyclist
-    8: 32,  # motorcyclist
-    9: 40,  # road
-    10: 44,  # parking
-    11: 48,  # sidewalk
-    12: 49,  # other-ground
-    13: 50,  # building
-    14: 51,  # fence
-    15: 70,  # vegetation
-    16: 71,  # trunk
-    17: 72,  # terrain
-    18: 80,  # pole
-    19: 81,  # traffic-sign
+    7: 40,  # road
+    8: 44,  # parking
+    9: 48,  # sidewalk
+    10: 49,  # other-ground
+    11: 50,  # building
+    12: 51,  # fence
+    13: 70,  # vegetation
+    14: 72,  # terrain
+    15: 80,  # pole
+    16: 81,  # traffic-sign
+    17: 52,  # other-structure
+    18: 99,  # other-object
 }
 
 outputs_dir = '/home/models/DISC/adl-project-gaze/outputs'

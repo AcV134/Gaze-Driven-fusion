@@ -13,9 +13,6 @@ import cv2
 from ...utils.helper import vox2pix
 from ...utils.projection import project_voxels_to_single_bev, project_image_to_voxels
 
-GAZE_DIR = '/home/models/DISC/adl-project-gaze/gaze_directory'
-
-
 SPLITS = {
     'train':
     ('2013_05_28_drive_0004_sync', '2013_05_28_drive_0000_sync', '2013_05_28_drive_0010_sync',
@@ -50,6 +47,7 @@ class KITTI360(Dataset):
         self,
         split,
         data_root,
+        gaze_root,
         label_root,
         depth_root,
         data_config,
@@ -57,10 +55,13 @@ class KITTI360(Dataset):
         frustum_size=4,
         context_prior=False,
         gaze=False,
+        gaze_input_architecture=False,
     ):
         super().__init__()
         self.gaze = gaze
+        self.gaze_input_architecture = gaze_input_architecture
         self.data_root = data_root
+        self.gaze_root = gaze_root
         self.label_root = label_root
         self.data_config = data_config
         self.sequences = SPLITS[split]
@@ -97,11 +98,16 @@ class KITTI360(Dataset):
                 })
         
         if self.gaze:
-            self.gaze_dir = GAZE_DIR
+            self.gaze_dir = self.gaze_root
             self.blur_kernel = (51,51)
-            self.transforms = T.Compose([
-                T.ToTensor(),
-                T.Normalize((0.485, 0.456, 0.406, 0.0), (0.229, 0.224, 0.225, 1.0))])
+            if self.gaze_input_architecture:
+                self.transforms = T.Compose([
+                    T.ToTensor(),
+                    T.Normalize((0.485, 0.456, 0.406, 0.0), (0.229, 0.224, 0.225, 1.0))])
+            else:
+                self.transforms = T.Compose([
+                    T.ToTensor(),
+                    T.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))])
         else:
             self.transforms = T.Compose([
                 T.ToTensor(),
@@ -203,10 +209,13 @@ class KITTI360(Dataset):
             #Normalize gaze map and concatenate it with the image as an additional channel
             gaze_nl = np.asarray(gaze_pil, dtype=np.float32) / 255.0
             label['gaze_2d'] = torch.from_numpy(gaze_nl).float()
-            gaze_nl = np.expand_dims(gaze_nl, axis=-1)
-            img = np.concatenate((img, gaze_nl), axis=-1)  # (H, W, 4)
 
-        data['img'] = self.transforms(img)  # (4, H, W)  # TO Tensor
+            #uncomment this section if you want to use gaze as an additional input channel
+            if self.gaze_input_architecture:
+                gaze_nl = np.expand_dims(gaze_nl, axis=-1)
+                img = np.concatenate((img, gaze_nl), axis=-1)  # (H, W, 4)
+
+        data['img'] = self.transforms(img)  # (N, H, W)  # TO Tensor; N = 3 or 4 depending on gaze_input_architecture
         data['depth'] = depth
         data['post_tran'] = post_tran
         data['post_rot'] = post_rot

@@ -65,7 +65,7 @@ pip install torch-scatter -f https://data.pyg.org/whl/torch-2.0.0+cu118.html
 pip install -r requirements.txt
 ```
 
-7. Compile BEV operations
+7. Compile BEV operations generates ``build`` folder. To ensure this executed correctly, check if ``ssc_ia/models/bevpipelines/BEVFusion/bevfusion/ops/bev_pool/bev_pool_ext.cpython-38-x86_64-linux-gnu.so`` and ``ssc_ia/models/bevpipelines/BEVFusion/bevfusion/ops/voxel/voxel_layer.cpython-38-x86_64-linux-gnu.so`` have been generated.
 ```bash
 python ssc_ia/models/bevpipelines/BEVFusion/setup.py build_ext --inplace
 ```
@@ -103,11 +103,30 @@ ln -s /path/to/KITTI-360-low data/
 
 4. **Testing**
 
-   Generate the outputs for submission on the evaluation server
+     Generate the outputs in the ``outputs/KITTI360/e14-17.04-0108-reSet`` folder (sample provided) for submission on the evaluation server
 
    ```bash
    python tools/test.py
    ```
+
+5. **Visualization**
+
+    1. Generating outputs in the ``outputs/KITTI360/predictions`` folder (sample provided)
+
+        ```shell
+        python tools/generate_outputs.py
+        ```
+
+    2. Visualization in the ``outputs/visualizations`` folder (sample provided)
+
+        ```shell
+        python tools/visualize.py
+        ```
+        In case of running on remote server without a monitor
+
+        ```bash
+        QT_QPA_PLATFORM=offscreen python tools/visualize.py
+        ```
 
 ## 🏆 Model Zoo
 
