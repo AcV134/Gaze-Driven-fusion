@@ -45,6 +45,7 @@ class IAScene(nn.Module):
         #uncomment this section if you want to use gaze as an additional input channel
         if self.gaze_input_architecture:
             self.gaze_stem = nn.Conv2d(in_channels=4, out_channels=3, kernel_size=3, padding=1)
+        
         # build model structure
         self.encoder = build_from_configs(
             encoders, encoder, embed_dims=embed_dims, scales=view_scales)

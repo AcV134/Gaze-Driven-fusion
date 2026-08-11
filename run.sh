@@ -9,7 +9,6 @@ export LD_LIBRARY_PATH=/home/anirudh/miniconda3/envs/disc/lib:$LD_LIBRARY_PATH
 
 #  use '/home/models/DISC/adl-project-gaze/outputs/DISC/DISC-v1-360/Gaze_ckpt/gaze-04-ce0.1868.ckpt' where we use gaze data as input to the model and '/home/models/DISC/adl-project-gaze/outputs/DISC/DISC-v1-360/Gaze_ckpt/e4_miou0.1791.ckpt' where we don't use gaze data as input to the model.
 
-
 #For training, uncomment this command
 python tools/train.py trainer.devices=1 use_gaze=True gaze_input=True
 

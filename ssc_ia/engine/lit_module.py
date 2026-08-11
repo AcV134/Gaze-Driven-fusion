@@ -95,7 +95,6 @@ class LitModule(L.LightningModule):
             for c, s, s_in, s_out in zip(self.class_names, iou_per_class, iou_per_class_in, iou_per_class_out):
                 if c == 'empty':  # Optional: skip 'empty' class
                     continue
-
                 per_class_dict[f'{prefix}/iou_{c}/1_all'] = s.item()
                 per_class_dict[f'{prefix}/iou_{c}/2_in'] = s_in.item()
                 per_class_dict[f'{prefix}/iou_{c}/3_out'] = s_out.item()

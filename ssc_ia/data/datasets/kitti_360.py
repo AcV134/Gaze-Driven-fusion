@@ -56,12 +56,13 @@ class KITTI360(Dataset):
         frustum_size=4,
         context_prior=False,
         gaze=False,
-        gaze_input_architecture=False
+        gaze_input_architecture=False,
     ):
         super().__init__()
         self.gaze = gaze
         self.gaze_input_architecture = gaze_input_architecture
         self.data_root = data_root
+        self.gaze_root = gaze_root
         self.label_root = label_root
         self.data_config = data_config
         self.sequences = SPLITS[split]
@@ -219,7 +220,7 @@ class KITTI360(Dataset):
                 gaze_nl = np.expand_dims(gaze_nl, axis=-1)
                 img = np.concatenate((img, gaze_nl), axis=-1)  # (H, W, 4)
 
-        data['img'] = self.transforms(img)  # (4, H, W)  # TO Tensor
+        data['img'] = self.transforms(img)  # (N, H, W)  # TO Tensor; N = 3 or 4 depending on gaze_input_architecture
         data['depth'] = depth
         data['post_tran'] = post_tran
         data['post_rot'] = post_rot

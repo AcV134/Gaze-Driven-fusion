@@ -13,6 +13,7 @@ class SSCMetrics(Metric):
 
         for metric in ('tp_sc', 'fp_sc', 'fn_sc'):
             self.add_state(metric, torch.tensor(0), dist_reduce_fx='sum')
+
         for metric in ('tps_ssc', 'fps_ssc', 'fns_ssc'):
             self.add_state(metric, torch.zeros(num_classes), dist_reduce_fx='sum')
 
@@ -32,7 +33,7 @@ class SSCMetrics(Metric):
         target_tensor = target['target']
         mask = target_tensor != self.ignore_index
 
-        tp, fp, fn = self._calculate_sc_scores(preds, target_tensor , mask)
+        tp, fp, fn = self._calculate_sc_scores(preds, target_tensor, mask)
         self.tp_sc += tp
         self.fp_sc += fp
         self.fn_sc += fn

@@ -42,4 +42,4 @@ evaluator:
   gaze: ${use_gaze}
   num_classes: 19
 
-path: /outputs/KITTI360/predictions
+path: outputs/KITTI360/predictions

@@ -135,7 +135,6 @@ In `ssc_ia/data/datasets/kitti_360.py`, edit variable ``GAZE_DIR``
         python tools/visualize.py
         ```
         In case of running on remote server without a monitor
-        
         ```bash
         QT_QPA_PLATFORM=offscreen python tools/visualize.py
         ```

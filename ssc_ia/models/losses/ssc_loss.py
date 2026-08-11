@@ -1,5 +1,8 @@
 import torch
 import torch.nn.functional as F
+import os
+import numpy as np
+import pickle
 
 import os
 import numpy as np
@@ -161,6 +164,7 @@ def gaze_weighted_ce_ssc_loss(pred, target, threshold=0.5, multiplier=2.0):
         gaze_mask = F.interpolate(gaze_mask, size=raw_loss.shape[1:], mode='nearest')
         gaze_mask = gaze_mask.squeeze(1)
         
+        # Compute spatial weights
         spatial_weights = 1.0 + gaze_mask * (multiplier - 1.0)
         weighted_loss = raw_loss * spatial_weights
 
@@ -168,7 +172,6 @@ def gaze_weighted_ce_ssc_loss(pred, target, threshold=0.5, multiplier=2.0):
         valid_targets = target['target'][valid_mask].long()
         cls_weights_valid = target['class_weights'].float()[valid_targets]
         spatial_weights_valid = spatial_weights[valid_mask]
-
         # Correct joint normalization factor
         total_weight_sum = (cls_weights_valid * spatial_weights_valid).sum()
 
@@ -176,5 +179,4 @@ def gaze_weighted_ce_ssc_loss(pred, target, threshold=0.5, multiplier=2.0):
         weighted_loss = raw_loss
         valid_targets = target['target'][valid_mask].long()
         total_weight_sum = target['class_weights'].float()[valid_targets].sum()
-
     return weighted_loss.sum() / (total_weight_sum + 1e-8)
