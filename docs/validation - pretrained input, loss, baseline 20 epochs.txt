@@ -1,0 +1,254 @@
+only_loss_from_pretrained
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃        Validate metric        ┃         DataLoader 0          ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│          val/BkmIoU           │      0.25500810146331787      │
+│        val/Gaze_BkmIoU        │      0.2767113447189331       │
+│      val/Gaze_BkmIoU_out      │      0.2536485195159912       │
+│       val/Gaze_InsmIoU        │      0.12778504192829132      │
+│     val/Gaze_InsmIoU_out      │      0.1176912933588028       │
+│         val/Gaze_mIoU         │      0.20224818587303162      │
+│       val/Gaze_mIoU_out       │      0.1856698989868164       │
+│          val/InsmIoU          │      0.12109056115150452      │
+│            val/IoU            │      0.4719175696372986       │
+│         val/Precision         │       0.656609296798706       │
+│          val/Recall           │      0.6265513896942139       │
+│     val/iou_bicycle/1_all     │     0.002631273353472352      │
+│     val/iou_bicycle/2_in      │     0.012855472974479198      │
+│     val/iou_bicycle/3_out     │     0.0015036948025226593     │
+│    val/iou_building/1_all     │      0.37260404229164124      │
+│     val/iou_building/2_in     │      0.42301154136657715      │
+│    val/iou_building/3_out     │      0.37147101759910583      │
+│       val/iou_car/1_all       │      0.3140990138053894       │
+│       val/iou_car/2_in        │      0.40848496556282043      │
+│       val/iou_car/3_out       │      0.29135042428970337      │
+│      val/iou_fence/1_all      │       0.081663578748703       │
+│      val/iou_fence/2_in       │      0.10277196764945984      │
+│      val/iou_fence/3_out      │      0.07956946641206741      │
+│   val/iou_motorcycle/1_all    │      0.02447514794766903      │
+│    val/iou_motorcycle/2_in    │      0.0301774013787508       │
+│   val/iou_motorcycle/3_out    │      0.02354731410741806      │
+│  val/iou_other-ground/1_all   │      0.06911513209342957      │
+│   val/iou_other-ground/2_in   │      0.07465890049934387      │
+│  val/iou_other-ground/3_out   │      0.06877188384532928      │
+│  val/iou_other-object/1_all   │      0.1153341606259346       │
+│   val/iou_other-object/2_in   │      0.06697022914886475      │
+│  val/iou_other-object/3_out   │      0.12035853415727615      │
+│ val/iou_other-structure/1_all │      0.15639592707157135      │
+│ val/iou_other-structure/2_in  │      0.24621151387691498      │
+│ val/iou_other-structure/3_out │      0.14844726026058197      │
+│  val/iou_other-vehicle/1_all  │      0.1004076823592186       │
+│  val/iou_other-vehicle/2_in   │      0.15791833400726318      │
+│  val/iou_other-vehicle/3_out  │      0.09040594846010208      │
+│     val/iou_parking/1_all     │      0.1355021893978119       │
+│     val/iou_parking/2_in      │      0.20313042402267456      │
+│     val/iou_parking/3_out     │      0.1313573718070984       │
+│     val/iou_person/1_all      │      0.0793646052479744       │
+│      val/iou_person/2_in      │      0.04849979281425476      │
+│     val/iou_person/3_out      │      0.08313526958227158      │
+│      val/iou_pole/1_all       │      0.14656080305576324      │
+│       val/iou_pole/2_in       │      0.08272296190261841      │
+│      val/iou_pole/3_out       │      0.1493712216615677       │
+│      val/iou_road/1_all       │      0.5980386734008789       │
+│       val/iou_road/2_in       │      0.5703138709068298       │
+│      val/iou_road/3_out       │      0.6001318097114563       │
+│    val/iou_sidewalk/1_all     │      0.3510095775127411       │
+│     val/iou_sidewalk/2_in     │      0.31007757782936096      │
+│    val/iou_sidewalk/3_out     │      0.3544739782810211       │
+│     val/iou_terrain/1_all     │      0.12111338973045349      │
+│     val/iou_terrain/2_in      │      0.1625281125307083       │
+│     val/iou_terrain/3_out     │      0.1184757798910141       │
+│  val/iou_traffic-sign/1_all   │      0.07112586498260498      │
+│   val/iou_traffic-sign/2_in   │      0.04896608740091324      │
+│  val/iou_traffic-sign/3_out   │       0.071831613779068       │
+│      val/iou_truck/1_all      │      0.23581644892692566      │
+│      val/iou_truck/2_in       │      0.2934700548648834       │
+│      val/iou_truck/3_out      │      0.2277175933122635       │
+│   val/iou_vegetation/1_all    │      0.40963035821914673      │
+│    val/iou_vegetation/2_in    │      0.3976981043815613       │
+│   val/iou_vegetation/3_out    │      0.4101381003856659       │
+│     val/loss_bev_seg_bk_0     │      2.1441450119018555       │
+│    val/loss_bev_seg_img_0     │      1.0300298929214478       │
+│    val/loss_bev_seg_ins_0     │      0.14935420453548431      │
+│       val/loss_ce_ssc_0       │      0.9081889986991882       │
+│       val/loss_depth_0        │     0.015490111894905567      │
+│      val/loss_geo_h_bk_0      │      0.7792774438858032       │
+│     val/loss_geo_h_ins_0      │      0.04812192544341087      │
+│      val/loss_geo_scal_0      │      1.0818253755569458       │
+│      val/loss_sem_scal_0      │       4.822910785675049       │
+│        val/loss_total         │       10.97934341430664       │
+│           val/mIoU            │      0.1880493313074112       │
+└───────────────────────────────┴───────────────────────────────┘
+Validation ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 453/453 0:06:18 • 0:00:00 1.24it/s
+
+
+-------------------------------------------------------------------------------------------------------
+Gaze as input, from pretrained
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃        Validate metric        ┃         DataLoader 0          ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│          val/BkmIoU           │      0.25620129704475403      │
+│        val/Gaze_BkmIoU        │       0.273655503988266       │
+│      val/Gaze_BkmIoU_out      │      0.25511035323143005      │
+│       val/Gaze_InsmIoU        │      0.12244788557291031      │
+│     val/Gaze_InsmIoU_out      │      0.11417952924966812      │
+│         val/Gaze_mIoU         │      0.19805169105529785      │
+│       val/Gaze_mIoU_out       │      0.1846449375152588       │
+│          val/InsmIoU          │      0.11747292429208755      │
+│            val/IoU            │      0.46996161341667175      │
+│         val/Precision         │       0.668032169342041       │
+│          val/Recall           │       0.613158643245697       │
+│     val/iou_bicycle/1_all     │     0.001898823189549148      │
+│     val/iou_bicycle/2_in      │      0.00514297466725111      │
+│     val/iou_bicycle/3_out     │     0.0014815990580245852     │
+│    val/iou_building/1_all     │      0.3708406984806061       │
+│     val/iou_building/2_in     │      0.41979771852493286      │
+│    val/iou_building/3_out     │      0.3696838915348053       │
+│       val/iou_car/1_all       │      0.3072160482406616       │
+│       val/iou_car/2_in        │       0.41237872838974        │
+│       val/iou_car/3_out       │      0.2831172049045563       │
+│      val/iou_fence/1_all      │      0.0909060388803482       │
+│      val/iou_fence/2_in       │      0.11442916840314865      │
+│      val/iou_fence/3_out      │      0.0884309858083725       │
+│   val/iou_motorcycle/1_all    │     0.017911052331328392      │
+│    val/iou_motorcycle/2_in    │     0.026639344170689583      │
+│   val/iou_motorcycle/3_out    │      0.0163897555321455       │
+│  val/iou_other-ground/1_all   │      0.0664205476641655       │
+│   val/iou_other-ground/2_in   │      0.07379920035600662      │
+│  val/iou_other-ground/3_out   │      0.06596961617469788      │
+│  val/iou_other-object/1_all   │      0.11987807601690292      │
+│   val/iou_other-object/2_in   │      0.07170592993497849      │
+│  val/iou_other-object/3_out   │      0.1248365193605423       │
+│ val/iou_other-structure/1_all │      0.15817862749099731      │
+│ val/iou_other-structure/2_in  │      0.24600107967853546      │
+│ val/iou_other-structure/3_out │      0.15064212679862976      │
+│  val/iou_other-vehicle/1_all  │      0.08992549031972885      │
+│  val/iou_other-vehicle/2_in   │      0.15267521142959595      │
+│  val/iou_other-vehicle/3_out  │      0.07988805323839188      │
+│     val/iou_parking/1_all     │      0.15404056012630463      │
+│     val/iou_parking/2_in      │      0.20379196107387543      │
+│     val/iou_parking/3_out     │      0.15134014189243317      │
+│     val/iou_person/1_all      │      0.07450273633003235      │
+│      val/iou_person/2_in      │      0.04327685013413429      │
+│     val/iou_person/3_out      │      0.07888790220022202      │
+│      val/iou_pole/1_all       │      0.14948132634162903      │
+│       val/iou_pole/2_in       │      0.07632303237915039      │
+│      val/iou_pole/3_out       │      0.1525532603263855       │
+│      val/iou_road/1_all       │      0.5966745018959045       │
+│       val/iou_road/2_in       │      0.5669680237770081       │
+│      val/iou_road/3_out       │      0.5990305542945862       │
+│    val/iou_sidewalk/1_all     │      0.3406992554664612       │
+│     val/iou_sidewalk/2_in     │      0.3033873736858368       │
+│    val/iou_sidewalk/3_out     │      0.34392213821411133      │
+│     val/iou_terrain/1_all     │      0.12177420407533646      │
+│     val/iou_terrain/2_in      │      0.15032635629177094      │
+│     val/iou_terrain/3_out     │      0.11981683224439621      │
+│  val/iou_traffic-sign/1_all   │      0.07992947846651077      │
+│   val/iou_traffic-sign/2_in   │      0.05067501589655876      │
+│  val/iou_traffic-sign/3_out   │      0.08097970485687256      │
+│      val/iou_truck/1_all      │      0.21651329100131989      │
+│      val/iou_truck/2_in       │      0.2632138133049011       │
+│      val/iou_truck/3_out      │      0.20948174595832825      │
+│   val/iou_vegetation/1_all    │      0.4062770903110504       │
+│    val/iou_vegetation/2_in    │      0.3843986690044403       │
+│   val/iou_vegetation/3_out    │      0.4071568548679352       │
+│     val/loss_bev_seg_bk_0     │       2.115496873855591       │
+│    val/loss_bev_seg_img_0     │       1.026285171508789       │
+│    val/loss_bev_seg_ins_0     │      0.15057769417762756      │
+│       val/loss_ce_ssc_0       │      0.9128134250640869       │
+│       val/loss_depth_0        │     0.015665875747799873      │
+│      val/loss_geo_h_bk_0      │      0.7827560901641846       │
+│     val/loss_geo_h_ins_0      │      0.0491274893283844       │
+│      val/loss_geo_scal_0      │      1.0718159675598145       │
+│      val/loss_sem_scal_0      │       4.787530899047852       │
+│        val/loss_total         │      10.912070274353027       │
+│           val/mIoU            │      0.1868371069431305       │
+└───────────────────────────────┴───────────────────────────────┘
+Validation ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 453/453 0:06:20 • 0:00:00 1.26it/s
+-----------------------------------------------------------------------------------------------
+Standard KITTI-360 trained model (without gaze, that is used as pretrained checkpoint as well)
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃        Validate metric        ┃         DataLoader 0          ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│          val/BkmIoU           │      0.26289233565330505      │
+│        val/Gaze_BkmIoU        │       0.281910240650177       │
+│      val/Gaze_BkmIoU_out      │      0.26174652576446533      │
+│       val/Gaze_InsmIoU        │      0.13338568806648254      │
+│     val/Gaze_InsmIoU_out      │      0.12767256796360016      │
+│         val/Gaze_mIoU         │      0.20764797925949097      │
+│       val/Gaze_mIoU_out       │      0.19470955431461334      │
+│          val/InsmIoU          │      0.13100653886795044      │
+│            val/IoU            │      0.4719274342060089       │
+│         val/Precision         │      0.6887475252151489       │
+│          val/Recall           │      0.5998587608337402       │
+│     val/iou_bicycle/1_all     │     0.003252452239394188      │
+│     val/iou_bicycle/2_in      │     0.010089686140418053      │
+│     val/iou_bicycle/3_out     │     0.0021564634516835213     │
+│    val/iou_building/1_all     │      0.3724394142627716       │
+│     val/iou_building/2_in     │      0.42383745312690735      │
+│    val/iou_building/3_out     │      0.37127259373664856      │
+│       val/iou_car/1_all       │      0.32110026478767395      │
+│       val/iou_car/2_in        │      0.4272743761539459       │
+│       val/iou_car/3_out       │      0.2960607409477234       │
+│      val/iou_fence/1_all      │      0.09330678731203079      │
+│      val/iou_fence/2_in       │      0.1152488961815834       │
+│      val/iou_fence/3_out      │       0.091205894947052       │
+│   val/iou_motorcycle/1_all    │      0.04117438569664955      │
+│    val/iou_motorcycle/2_in    │      0.04774440452456474      │
+│   val/iou_motorcycle/3_out    │     0.039789069443941116      │
+│  val/iou_other-ground/1_all   │      0.07478503882884979      │
+│   val/iou_other-ground/2_in   │      0.07642604410648346      │
+│  val/iou_other-ground/3_out   │      0.07468314468860626      │
+│  val/iou_other-object/1_all   │      0.12311964482069016      │
+│   val/iou_other-object/2_in   │      0.08491579443216324      │
+│  val/iou_other-object/3_out   │      0.1273314654827118       │
+│ val/iou_other-structure/1_all │      0.15676964819431305      │
+│ val/iou_other-structure/2_in  │      0.25459539890289307      │
+│ val/iou_other-structure/3_out │      0.14851334691047668      │
+│  val/iou_other-vehicle/1_all  │      0.10882716625928879      │
+│  val/iou_other-vehicle/2_in   │      0.1527695655822754       │
+│  val/iou_other-vehicle/3_out  │      0.10002211481332779      │
+│     val/iou_parking/1_all     │      0.16442187130451202      │
+│     val/iou_parking/2_in      │      0.21914809942245483      │
+│     val/iou_parking/3_out     │      0.16126209497451782      │
+│     val/iou_person/1_all      │      0.08953019976615906      │
+│      val/iou_person/2_in      │      0.05058559775352478      │
+│     val/iou_person/3_out      │      0.09507998824119568      │
+│      val/iou_pole/1_all       │      0.15692806243896484      │
+│       val/iou_pole/2_in       │      0.07341288030147552      │
+│      val/iou_pole/3_out       │      0.16024622321128845      │
+│      val/iou_road/1_all       │      0.6072626113891602       │
+│       val/iou_road/2_in       │      0.5788494944572449       │
+│      val/iou_road/3_out       │      0.6093946695327759       │
+│    val/iou_sidewalk/1_all     │      0.3572738766670227       │
+│     val/iou_sidewalk/2_in     │      0.3089151680469513       │
+│    val/iou_sidewalk/3_out     │      0.3615209460258484       │
+│     val/iou_terrain/1_all     │       0.130307137966156       │
+│     val/iou_terrain/2_in      │      0.1642572581768036       │
+│     val/iou_terrain/3_out     │      0.12781387567520142      │
+│  val/iou_traffic-sign/1_all   │      0.09763655811548233      │
+│   val/iou_traffic-sign/2_in   │     0.050509627908468246      │
+│  val/iou_traffic-sign/3_out   │      0.0996943861246109       │
+│      val/iou_truck/1_all      │      0.23749001324176788      │
+│      val/iou_truck/2_in       │      0.30316925048828125      │
+│      val/iou_truck/3_out      │      0.22867266833782196      │
+│   val/iou_vegetation/1_all    │      0.40946465730667114      │
+│    val/iou_vegetation/2_in    │      0.3959142863750458       │
+│   val/iou_vegetation/3_out    │      0.41005226969718933      │
+│     val/loss_bev_seg_bk_0     │      2.0724258422851562       │
+│    val/loss_bev_seg_img_0     │       1.035258173942566       │
+│    val/loss_bev_seg_ins_0     │      0.1471206396818161       │
+│       val/loss_ce_ssc_0       │      0.8958415389060974       │
+│       val/loss_depth_0        │      0.01554870419204235      │
+│      val/loss_geo_h_bk_0      │      0.7722443342208862       │
+│     val/loss_geo_h_ins_0      │     0.047866012901067734      │
+│      val/loss_geo_scal_0      │      1.0526747703552246       │
+│      val/loss_sem_scal_0      │       4.937484264373779       │
+│        val/loss_total         │      10.976461410522461       │
+│           val/mIoU            │      0.19694943726062775      │
+└───────────────────────────────┴───────────────────────────────┘
+Validation ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 453/453 0:06:38 • 0:00:00 1.35it/s
+
+

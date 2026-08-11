@@ -17,7 +17,6 @@ class SSCMetrics(Metric):
         for metric in ('tps_ssc', 'fps_ssc', 'fns_ssc'):
             self.add_state(metric, torch.zeros(num_classes), dist_reduce_fx='sum')
 
-        
         if self.gaze:
             #inside gaze area
             for metric in ('tps_ssc_in', 'fps_ssc_in', 'fns_ssc_in'):
@@ -67,8 +66,6 @@ class SSCMetrics(Metric):
             self.tps_ssc_out += tp_out
             self.fps_ssc_out += fp_out
             self.fns_ssc_out += fn_out
-        
-
 
     def compute(self):
         if self.tp_sc != 0:

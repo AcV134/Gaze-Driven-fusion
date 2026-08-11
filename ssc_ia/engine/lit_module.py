@@ -46,6 +46,8 @@ class LitModule(L.LightningModule):
         return loss
 
     def training_step(self, batch, batch_idx):
+        # When overfitting should output constant every single epoch
+        # print("Gaze map mean:", batch[1]['gaze_2d'].mean().item())
         loss = self._step(batch, self.train_evaluator)
         if isinstance(loss, dict):
             loss['loss_total'] = sum(loss.values())
@@ -93,14 +95,13 @@ class LitModule(L.LightningModule):
             for c, s, s_in, s_out in zip(self.class_names, iou_per_class, iou_per_class_in, iou_per_class_out):
                 if c == 'empty':  # Optional: skip 'empty' class
                     continue
-                    
                 per_class_dict[f'{prefix}/iou_{c}/1_all'] = s.item()
                 per_class_dict[f'{prefix}/iou_{c}/2_in'] = s_in.item()
                 per_class_dict[f'{prefix}/iou_{c}/3_out'] = s_out.item()
 
             # Log the ordered dictionary
             self.log_dict(per_class_dict, sync_dist=True)
-
+            
         evaluator.reset()
 
     def on_fit_start(self):

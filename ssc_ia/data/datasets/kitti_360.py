@@ -13,6 +13,7 @@ import cv2
 from ...utils.helper import vox2pix
 from ...utils.projection import project_voxels_to_single_bev, project_image_to_voxels
 
+
 SPLITS = {
     'train':
     ('2013_05_28_drive_0004_sync', '2013_05_28_drive_0000_sync', '2013_05_28_drive_0010_sync',
@@ -137,13 +138,17 @@ class KITTI360(Dataset):
         label['class_fres'] = KITTI_360_CLASS_FREQ
         label['bk_cls_info'] = bk_cls_info
         label['ins_cls_info'] = ins_cls_info
+        label['cam_pose'] = T_velo_2_cam
+        label['frame_id'] = frame_id
 
         scale_3ds = (self.output_scale, self.project_scale)
         data['scale_3ds'] = scale_3ds
         cam_K = P[:3, :3]
         data['cam_K'] = cam_K
-        
+
+        # set to False for overfitting       
         flip = random.random() > 0.5 if self.flip and self.split == 'train' else False
+
         target_1_path = osp.join(self.label_root, sequence, frame_id + f'_1_{scale_3ds[0]}.npy')
         with_target = self.split != 'test' and osp.exists(target_1_path)
         if with_target:
@@ -160,7 +165,7 @@ class KITTI360(Dataset):
 
         img_path = osp.join(self.data_root, sequence, 'image_00/data_rect',
                             frame_id + '.jpg')
-        # img_path = '/home/datasets/KITTI-360-low/data_2d_raw/2013_05_28_drive_0000_sync/image_00/data_rect/000000.jpg'
+        # img_path = 'datasets/KITTI-360-low/data_2d_raw/2013_05_28_drive_0000_sync/image_00/data_rect/000000.jpg'
         try:
             img = Image.open(img_path).convert('RGB')
         except Exception as e:
@@ -172,7 +177,7 @@ class KITTI360(Dataset):
             #importing gaze map
             gaze_path = osp.join(self.gaze_dir, 'data_2d_raw', sequence, 'image_00/data_rect',
                                     frame_id + '_pred.png')
-            # gaze_path = '/home/models/DISC/adl-project-gaze/gaze_directory/data_2d_raw/2013_05_28_drive_0000_sync/image_00/data_rect/000000_pred.png'
+            # gaze_path = 'gaze_directory/data_2d_raw/2013_05_28_drive_0000_sync/image_00/data_rect/000000_pred.png'
             gaze_map = cv2.imread(gaze_path, cv2.IMREAD_GRAYSCALE)
             if gaze_map is None:
                 print(f"Error loading gaze map at path: {gaze_path}. Using zero gaze map instead.")
@@ -318,7 +323,8 @@ class KITTI360(Dataset):
             data_config : include aug dict and custom input size
         """
         fH, fW = self.data_config['input_size'] # resized shape
-        
+
+        # set to False for overfitting
         if self.split=='train':
             resize = float(fW)/float(W)
             resize += np.random.uniform(*self.data_config['resize'])

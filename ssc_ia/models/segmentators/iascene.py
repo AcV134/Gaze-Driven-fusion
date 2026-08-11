@@ -64,7 +64,7 @@ class IAScene(nn.Module):
     
     def forward(self, inputs):
         # Symphonies encoder
-        # uncomment this section if you want to use gaze as an additional input channel
+        #uncomment this section if you want to use gaze as an additional input channel
         if self.gaze_input_architecture:
             gaze_input = self.gaze_stem(inputs['img'])
             feats = self.encoder(gaze_input) 

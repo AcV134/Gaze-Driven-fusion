@@ -148,15 +148,13 @@ def draw(
     else:
         mlab.show()
 
-
 base_output_dir = './outputs/'
 
 @hydra.main(config_path='../configs', config_name='config_360', version_base=None)
 def main(config: DictConfig):
-    files = osp.join(base_output_dir, config.data.datasets.type, 'predictions', config.ckpt_path.split('/')[-1].split(".")[0] + '.' + config.ckpt_path.split('/')[-1].split(".")[1])
-    print(f"Visualizing outputs from: {files}")
-    output_dir = osp.join(base_output_dir, 'visualizations', config.data.datasets.type, config.ckpt_path.split('/')[-1].split(".")[0] + '.' + config.ckpt_path.split('/')[-1].split(".")[1])
-    print(f"Saving visualizations to: {output_dir}")
+    files = ([os.path.join(config.path, f)
+              for f in os.listdir(config.path)] if os.path.isdir(config.path) else [config.path])
+    output_dir = osp.join(base_output_dir, 'visualizations')
     os.makedirs(output_dir, exist_ok=True)
 
     for file in os.listdir(files):

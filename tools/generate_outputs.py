@@ -17,7 +17,7 @@ def main(cfg: DictConfig):
 
     dls, meta_info = build_data_loaders(cfg.data)
     data_loader = dls[1]
-    output_dir = osp.join('outputs', cfg.data.datasets.type, 'predictions',cfg.ckpt_path.split('/')[-1].split('.')[0] + '.' + cfg.ckpt_path.split('/')[-1].split('.')[1])
+    output_dir = osp.join('outputs', cfg.data.datasets.type, 'predictions')
 
     if cfg.get('ckpt_path'):
         model = LitModule.load_from_checkpoint(cfg.ckpt_path, **cfg, meta_info=meta_info)

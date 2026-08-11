@@ -81,9 +81,21 @@ mkdir data
 ln -s /path/to/KITTI-360-low data/
 ```
 
+**Gaze files**
+
+```bash
+mkdir gaze_dir
+ln -s driver-gaze-yolov5/outputs/2d_heatmaps/KITTI-360-low/data_2d_raw gaze_dir/
+```
+
+In `ssc_ia/data/datasets/kitti_360.py`, edit variable ``GAZE_DIR``
+
+
 ### Step 3. Training and Inference
 
 1. **Setup**
+
+   Refer to `run.sh`, we set the ``use_gaze`` flag again the commands.
 
    ```bash
    export PYTHONPATH=`pwd`:$PYTHONPATH
@@ -93,20 +105,20 @@ ln -s /path/to/KITTI-360-low data/
 2. **Training**
 
    ```bash
-   python tools/train.py 
+   python tools/train.py use_gaze=True
    ```
 
 3. **Validation**
    ```bash
-   python tools/train.py resume.ckpt_path=/path/to/ckpt validate=true
+   python tools/train.py use_gaze=True resume.ckpt_path=/path/to/ckpt validate=true
    ```
 
 4. **Testing**
 
-     Generate the outputs in the ``outputs/KITTI360/e14-17.04-0108-reSet`` folder (sample provided) for submission on the evaluation server
+   Generate the ``.label`` outputs  in the ``outputs/KITTI360/labels`` folder (sample provided) for submission on the evaluation server
 
    ```bash
-   python tools/test.py
+   python tools/test.py use_gaze=True
    ```
 
 5. **Visualization**
@@ -123,7 +135,6 @@ ln -s /path/to/KITTI-360-low data/
         python tools/visualize.py
         ```
         In case of running on remote server without a monitor
-
         ```bash
         QT_QPA_PLATFORM=offscreen python tools/visualize.py
         ```
@@ -140,6 +151,7 @@ We provide the pretrained weights on SemanticKITTI and KITTI360 datasets, reprod
 ## 🌟 Acknowledgement
 
 We extend our sincere gratitude to these outstanding open source projects:
+- [Driver gaze estimation on KITTI360](https://github.com/SebastianJames55/driver-gaze-yolov5)
 - [Symphonize](https://github.com/hustvl/Symphonies.git)
 - [CGFormer](https://github.com/pkqbajng/CGFormer)
 - [mmdet3d](https://github.com/open-mmlab/mmdetection3d)

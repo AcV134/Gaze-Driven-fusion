@@ -32,7 +32,7 @@ def pre_build_callbacks(cfg: DictConfig):
         callbacks.LearningRateMonitor(logging_interval='step'),
         callbacks.ModelCheckpoint(
             dirpath=logger[0].log_dir,
-            filename='e{epoch}_miou{val/mIoU:.4f}',
+            filename='gaze-e{epoch}_miou{val/mIoU:.4f}',
             monitor='val/mIoU',
             mode='max',
             auto_insert_metric_name=False),
