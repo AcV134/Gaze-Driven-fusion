@@ -32,8 +32,8 @@ KITTI_LABEL_MAP = {
     19: 81,  # traffic-sign
 }
 
-outputs_dir = '/home/models/DISC/adl-project-gaze/outputs'
-unique_id = 'e14-17.04-0108-reSet'
+outputs_dir = 'outputs'
+
 
 @hydra.main(config_path='../configs', config_name='config_360', version_base=None)
 def main(cfg: DictConfig):
@@ -43,7 +43,7 @@ def main(cfg: DictConfig):
 
     dls, meta_info = build_data_loaders(cfg.data)
     data_loader = dls[-1]
-    output_dir = osp.join(outputs_dir, cfg.data.datasets.type, unique_id)
+    output_dir = osp.join(outputs_dir, cfg.data.datasets.type, 'labels')
 
     if cfg.get('ckpt_path'):
         model = LitModule.load_from_checkpoint(cfg.ckpt_path, **cfg, meta_info=meta_info)
@@ -54,7 +54,7 @@ def main(cfg: DictConfig):
     model.cuda()
     model.eval()
 
-    # assert cfg.data.datasets.type == 'SemanticKITTI'
+    assert cfg.data.datasets.type == 'KITTI360'
     label_map = np.array([KITTI_LABEL_MAP[i] for i in range(len(KITTI_LABEL_MAP))], dtype=np.int32)
 
     with torch.no_grad():

@@ -1,6 +1,10 @@
 import torch
 import torch.nn.functional as F
 
+import os
+import numpy as np
+import pickle
+
 
 def ce_ssc_loss(pred, target):
     return F.cross_entropy(
@@ -136,6 +140,7 @@ def difficult_area_focus_loss(pred, target):
     weights[nonempty_mask] = 3.0  # 20% nonempty
     return (loss * weights).sum() / total_sum # weighted_loss
 
+
 def gaze_weighted_ce_ssc_loss(pred, target, threshold=0.5, multiplier=5.0):
     raw_loss = F.cross_entropy(
         pred['ssc_logits'].float(),
@@ -144,6 +149,8 @@ def gaze_weighted_ce_ssc_loss(pred, target, threshold=0.5, multiplier=5.0):
         ignore_index=255,
         reduction='none',
     )
+
+    valid_mask = target['target'] != 255
 
     if 'gaze_3d' in target:
         gaze_3d = target['gaze_3d']
@@ -156,11 +163,18 @@ def gaze_weighted_ce_ssc_loss(pred, target, threshold=0.5, multiplier=5.0):
         
         spatial_weights = 1.0 + gaze_mask * (multiplier - 1.0)
         weighted_loss = raw_loss * spatial_weights
+
+        # Compute matching spatial-class weights for valid target voxels
+        valid_targets = target['target'][valid_mask].long()
+        cls_weights_valid = target['class_weights'].float()[valid_targets]
+        spatial_weights_valid = spatial_weights[valid_mask]
+
+        # Correct joint normalization factor
+        total_weight_sum = (cls_weights_valid * spatial_weights_valid).sum()
+
     else:
         weighted_loss = raw_loss
-    
-    valid_mask = target['target'] != 255
-    valid_targets = target['target'][valid_mask].long()
-    weight_sum = target['class_weights'].float()[valid_targets].sum()
-    
-    return weighted_loss.sum() / (weight_sum + 1e-8)
+        valid_targets = target['target'][valid_mask].long()
+        total_weight_sum = target['class_weights'].float()[valid_targets].sum()
+
+    return weighted_loss.sum() / (total_weight_sum + 1e-8)

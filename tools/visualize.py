@@ -136,14 +136,13 @@ def draw(
     else:
         mlab.show()
 
-base_output_dir = '/mnt/A/hust_ley/CODE_LEY/Project/iascene_pro/IAScene-Outputs/Visval/'
-vis_ip = '17.65-1213'
+base_output_dir = './outputs/'
 
-@hydra.main(config_path='../configs', config_name='my_config_sema', version_base=None)
+@hydra.main(config_path='../configs', config_name='config_360', version_base=None)
 def main(config: DictConfig):
     files = ([os.path.join(config.path, f)
               for f in os.listdir(config.path)] if os.path.isdir(config.path) else [config.path])
-    output_dir = osp.join(base_output_dir, vis_ip, 'figures')
+    output_dir = osp.join(base_output_dir, 'visualizations')
     os.makedirs(output_dir, exist_ok=True)
 
     for file in track(files):
